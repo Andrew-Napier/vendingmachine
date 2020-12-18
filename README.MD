@@ -6,10 +6,12 @@ Overview
 
 This project uses Azure Functions Serverless architecture to provide an interface to a vending machine.
 It can be debugged locally, using HTTP requests to perform the following features:
-        add-payment:    [POST]      http://localhost:7071/api/add-payment
-        products:       [GET]       http://localhost:7071/api/products
-        purchase:       [POST]      http://localhost:7071/api/purchase
-        final-purchase: [GET]       http://localhost:7071/api/final-purchase
+
+| Function | Verb | URL |
+| add-payment | [POST] |  http://localhost:7071/api/add-payment |
+| products | [GET] | http://localhost:7071/api/products |
+| purchase | [POST] | http://localhost:7071/api/purchase |
+| final-purchase | [GET] | http://localhost:7071/api/final-purchase |
 
 All requests require a header parameter of "x-id", to identify the user making the purchase.
 (In a real service, OAuth would provide a bearer-token with a "user-id" property in the JWT payload, but this 
