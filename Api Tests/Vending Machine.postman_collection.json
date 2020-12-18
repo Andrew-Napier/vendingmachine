@@ -1,0 +1,128 @@
+{
+	"info": {
+		"_postman_id": "f73b85c7-da1f-4342-8ed3-c6598c0b6584",
+		"name": "Vending Machine",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "GetProducts",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-id",
+						"value": "42",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:7071/api/products",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "7071",
+					"path": [
+						"api",
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add Payment",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-id",
+						"value": "42",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:7071/api/add-payment/?money=10.80",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "7071",
+					"path": [
+						"api",
+						"add-payment",
+						""
+					],
+					"query": [
+						{
+							"key": "money",
+							"value": "10.80"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add Purchase",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-id",
+						"type": "text",
+						"value": "42"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:7071/api/purchase/?item=coke",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "7071",
+					"path": [
+						"api",
+						"purchase",
+						""
+					],
+					"query": [
+						{
+							"key": "item",
+							"value": "coke"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetFinalPurchase",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-id",
+						"type": "text",
+						"value": "42"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:7071/api/final-purchase",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "7071",
+					"path": [
+						"api",
+						"final-purchase"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
