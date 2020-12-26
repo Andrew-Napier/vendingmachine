@@ -26,14 +26,15 @@ was ommitted for simplicity).
 Technical notes and implementation details.
 -------------------------------------------
 - There is no user-interface provided in this solution.
-- I will include a Postman Environment file that exercises the end-points
+- The **HttpTriggers.cs** file is the "top-level" of an Azure Functions app.  This is the entry point for HTTP/HTTPS requests.
+- I have included a Postman Collection file that exercises the end-points. (See https://postman.com) 
 - For simplicity sake, the Products list has been hard-coded.  Obviously, in a real world solution the `ProductsDictionary` would be database backed.
 - The `ShoppingCartFactory` would likewise be backed by storage to avoid memory pressures that this would face should there be a massive spike in users.
 - As mentioned above, a header variable was used as "authentication".  This is not secure and open to abuse.
-- I missed a chance to use a CQRS pattern with the object returned in the final-purchase API.  - Remaining stock-levels are unlikely to be of interest to the consumer
-- Typically of a test I tried to "dive too deep" and the unit test (written last) have suffered in terms of breadth and depth of coverage.
-- My normal approach would be to continue in the vain of thorough unit-tests and only a few cursory integration tests.  
-- In the work I've been doing, using Postman and making actual requests help give much greater coverage.
+- I think I missed a chance to use a CQRS pattern with the object returned in the final-purchase API.  - Remaining stock-levels are unlikely to be of interest to the consumer
+- Typically of a test I tried to "dive too deep" and the unit tests suffered in terms of breadth and depth of coverage.
+- My definition of a "unit test" is as written.  Each test addresses only one class.  An "integration test" would define multiple real "subject-under-test" (sut) classes to ensure they behaved together the way it would be expected to. 
+- I wasn't happy with the amount of technical verification I originally had going on in the triggers, so introduced the `HttpRequestHandler` service to extract this from other logic.
 - There isn't as much care to servicing simultaneous requests as I would like.  For instance, I wanted to use a lot more immutable objects to "update" stock-levels 
 
 _there's always more that can be done_
