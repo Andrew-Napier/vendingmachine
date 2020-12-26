@@ -29,7 +29,6 @@ namespace VendingMachine.Services
         public IActionResult PerformAuthenticatedFunc(
             Func<ShoppingCart, Dictionary<string, object>, IActionResult> delegateFunc)
         {
-            var parameters = new Dictionary<string, object>();
             string id = request.Headers.TryGetValues("x-id", out IEnumerable<string> values) 
                 ? values.FirstOrDefault()
                 : null;
@@ -39,22 +38,14 @@ namespace VendingMachine.Services
                 return new UnauthorizedResult();
             }
 
-            var queryCollection = request.RequestUri?.ParseQueryString() ?? new NameValueCollection();
-
-            foreach (var paramDetail in mandatoryValues)
+            Dictionary<string, object> parameters;
+            try
             {
-                var item = queryCollection.Get(paramDetail.Key);
-                if (string.IsNullOrEmpty(item))
-                {
-                    return new BadRequestObjectResult($"Query Param: \"{paramDetail.Key}\" must be specified.");
-                }
-                object paramValue = Convert.ChangeType(item, paramDetail.Value);
-                if (paramValue is null)
-                {
-                    return new BadRequestObjectResult($"Query Param: \"{paramDetail.Key}\" is incorrectly formatted.");
-                }
-
-                parameters.Add(paramDetail.Key, paramValue);
+                parameters = BuildParameters();
+            }
+            catch (Exception e) when (e is VendingMachineException || e is FormatException)
+            {
+                return new BadRequestObjectResult(e.Message);
             }
 
             ShoppingCart cart = ShoppingCartFactory.AddOrRetrieveCart(userId);
@@ -71,6 +62,32 @@ namespace VendingMachine.Services
         public void AddMandatoryQueryParameter(string paramName, Type type)
         {
             mandatoryValues.Add(paramName, type);
+        }
+
+
+        private Dictionary<string, object> BuildParameters()
+        {
+            var parameters = new Dictionary<string, object>();
+
+            var queryCollection = request.RequestUri?.ParseQueryString() ?? new NameValueCollection();
+
+            foreach (var paramDetail in mandatoryValues)
+            {
+                var item = queryCollection.Get(paramDetail.Key);
+                if (string.IsNullOrEmpty(item))
+                {
+                    throw new VendingMachineException($"Query Param: \"{paramDetail.Key}\" must be specified.");
+                }
+                object paramValue = Convert.ChangeType(item, paramDetail.Value);
+                if (paramValue is null)
+                {
+                    throw new VendingMachineException($"Query Param: \"{paramDetail.Key}\" is incorrectly formatted.");
+                }
+
+                parameters.Add(paramDetail.Key, paramValue);
+            }
+
+            return parameters;
         }
     }
 }
