@@ -65,7 +65,7 @@
 			"response": []
 		},
 		{
-			"name": "Add Purchase",
+			"name": "Add Purchase - Coke",
 			"request": {
 				"method": "POST",
 				"header": [
@@ -98,6 +98,138 @@
 			"response": []
 		},
 		{
+			"name": "Add Purchase - almonds",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-id",
+						"type": "text",
+						"value": "42"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:7071/api/purchase/?item=almonds",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "7071",
+					"path": [
+						"api",
+						"purchase",
+						""
+					],
+					"query": [
+						{
+							"key": "item",
+							"value": "almonds"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add Purchase - handcream",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-id",
+						"type": "text",
+						"value": "42"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:7071/api/purchase/?item=handcream",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "7071",
+					"path": [
+						"api",
+						"purchase",
+						""
+					],
+					"query": [
+						{
+							"key": "item",
+							"value": "handcream"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add Purchase - Lollie",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-id",
+						"type": "text",
+						"value": "42"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:7071/api/purchase/?item=lollie",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "7071",
+					"path": [
+						"api",
+						"purchase",
+						""
+					],
+					"query": [
+						{
+							"key": "item",
+							"value": "lollie"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add Purchase - (unlisted product)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-id",
+						"type": "text",
+						"value": "42"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:7071/api/purchase/?item=coffee",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "7071",
+					"path": [
+						"api",
+						"purchase",
+						""
+					],
+					"query": [
+						{
+							"key": "item",
+							"value": "coffee"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "GetFinalPurchase",
 			"request": {
 				"method": "GET",
@@ -123,6 +255,5 @@
 			},
 			"response": []
 		}
-	],
-	"protocolProfileBehavior": {}
+	]
 }

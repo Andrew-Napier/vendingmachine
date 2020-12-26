@@ -10,6 +10,7 @@ using Newtonsoft.Json;
 using System.Collections.Generic;
 using VendingMachine.Models;
 using VendingMachine.Services;
+using System.Net.Http;
 
 namespace VendingMachine
 {
@@ -36,7 +37,7 @@ namespace VendingMachine
 
         [FunctionName("products")]
         public IActionResult RunGetProducts(
-            [HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequestMessage req,
             ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed GET products.");
@@ -53,7 +54,7 @@ namespace VendingMachine
 
         [FunctionName("add-payment")]
         public IActionResult RunAddPayment(
-            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "add-payment")] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "add-payment")] HttpRequestMessage req,
             ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed POST add-payment.");
@@ -74,7 +75,7 @@ namespace VendingMachine
 
         [FunctionName("purchase")]
         public IActionResult RunPurchase(
-            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "purchase")] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "purchase")] HttpRequestMessage req,
             ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed POST purchase.");
@@ -103,7 +104,7 @@ namespace VendingMachine
 
         [FunctionName("final-purchase")]
         public IActionResult RunFinalPurchase(
-            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "final-purchase")] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "final-purchase")] HttpRequestMessage req,
             ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed GET final-purchase.");
