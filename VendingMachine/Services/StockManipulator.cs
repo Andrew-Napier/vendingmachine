@@ -20,7 +20,8 @@ namespace VendingMachine.Services
 
         public bool IsValidPurchaseRequest(Product product, decimal remainingFunds)
         {
-            return product.Quantity > 0
+            return product != null
+                && product.Quantity > 0
                 && product.Price > 0.0M
                 && remainingFunds >= product.Price;
         }

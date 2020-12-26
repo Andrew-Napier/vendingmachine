@@ -85,17 +85,15 @@ namespace VendingMachine
                 HttpRequestHandler.PerformAuthenticatedFunc((cart, parameters) => 
                 {
                     var item = (string)parameters["item"];
-
                     Product product = Products.GetItem(item);
-                    if (StockManipulator.IsValidPurchaseRequest(product, cart.RemainingFunds))
-                    {
-                        StockManipulator.ReduceStockLevel(product);
-                        CartManipulator.AddItem(product, cart);
-                    }
-                    else
+
+                    if (!StockManipulator.IsValidPurchaseRequest(product, cart.RemainingFunds))
                     {
                         return new BadRequestObjectResult("Unable to purchase item");
                     }
+
+                    StockManipulator.ReduceStockLevel(product);
+                    CartManipulator.AddItem(product, cart);
 
                     return new OkResult();
                 });
