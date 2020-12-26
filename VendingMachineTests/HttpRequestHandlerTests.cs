@@ -25,11 +25,37 @@ namespace VendingMachineTests
             sut.AddMandatoryQueryParameter("item", typeof(string));
 
             // Then
-            sut.PerformAuthenticatedFunc((cart, parameters) =>
+            var actual = sut.PerformAuthenticatedFunc((cart, parameters) =>
+                {
+                    Assert.That(parameters.ContainsKey("item"));
+                    return new OkResult();
+                });
+
+            Assert.That(actual, Is.TypeOf<OkResult>());
+        }
+
+        [Test]
+        public void TestSuccessReturnsDelegateResult()
+        {
+            // Given  
+            var mockShoppingCartFactory = new Mock<IShoppingCartFactory>();
+            var sut = new HttpRequestHandler(mockShoppingCartFactory.Object);
+
+            HttpRequestMessage mockRequest = new HttpRequestMessage();
+            mockRequest.RequestUri = new Uri("http://myvendingmachine.com/api/purchase/?item=handcream");
+            mockRequest.Headers.Add("x-id", "42");
+
+            // When
+            sut.InitialiseForRequest(mockRequest);
+            sut.AddMandatoryQueryParameter("item", typeof(string));
+
+            // Then
+            var actual = sut.PerformAuthenticatedFunc((cart, parameters) =>
             {
-                Assert.That(parameters.ContainsKey("item"));
-                return new OkResult();
+                return new ContentResult();
             });
+
+            Assert.That(actual, Is.TypeOf<ContentResult>());
         }
 
         [Test]
