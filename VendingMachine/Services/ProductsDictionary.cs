@@ -86,6 +86,13 @@ namespace VendingMachine
                         Price = 4.95M,
                         Quantity = 5
                     });
+                    p.Add(new Product
+                    { 
+                        Id = "lollie",
+                        Description = "5c Lollies",
+                        Price = 0.05M,
+                        Quantity = 2
+                    });
 
                     return p; 
                 });
