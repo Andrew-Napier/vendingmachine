@@ -15,16 +15,19 @@ namespace VendingMachine
 {
     public class HttpTriggers
     {
+        public IHttpRequestHandler HttpRequestHandler { get; }
         public IProductsDictionary Products { get; }
         public IShoppingCartFactory ShoppingCartFactory { get; }
         public IShoppingCartManipulator CartManipulator { get; }
         public IStockManipulator StockManipulator { get; }
 
-        public HttpTriggers(IProductsDictionary products,
+        public HttpTriggers(IHttpRequestHandler httpRequestHandler,
+                            IProductsDictionary products,
                             IShoppingCartFactory shoppingCartFactory,
                             IShoppingCartManipulator shoppingCartManipulator,
                             IStockManipulator stockManipulator)
         {
+            HttpRequestHandler = httpRequestHandler ?? throw new ArgumentNullException(nameof(httpRequestHandler));
             Products = products ?? throw new ArgumentNullException(nameof(products));
             ShoppingCartFactory = shoppingCartFactory ?? throw new ArgumentNullException(nameof(shoppingCartFactory));
             CartManipulator = shoppingCartManipulator ?? throw new ArgumentNullException(nameof(shoppingCartManipulator));
@@ -37,9 +40,10 @@ namespace VendingMachine
             ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed GET products.");
+            HttpRequestHandler.InitialiseForRequest(req);
 
             return
-                PerformAuthenticatedFunc(req, (_) =>
+                HttpRequestHandler.PerformAuthenticatedFunc((c, _) =>
                 {
                     List<Product> response = Products.GetAll();
 
@@ -54,13 +58,13 @@ namespace VendingMachine
         {
             log.LogInformation("C# HTTP trigger function processed POST add-payment.");
 
+            HttpRequestHandler.InitialiseForRequest(req);
+            HttpRequestHandler.AddMandatoryQueryParameter("money", typeof(decimal));
+
             return
-                PerformAuthenticatedFunc(req, (cart) => 
+                HttpRequestHandler.PerformAuthenticatedFunc((cart, parameters) => 
                 {
-                    if (!decimal.TryParse(req.Query["money"], out decimal money))
-                    {
-                        return new BadRequestObjectResult("Query Param: \"money\" must be parsable as a decimal");
-                    }
+                    var money = (decimal)parameters["money"];
 
                     CartManipulator.AddPayment(cart, money);
 
@@ -74,15 +78,13 @@ namespace VendingMachine
             ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed POST purchase.");
+            HttpRequestHandler.InitialiseForRequest(req);
+            HttpRequestHandler.AddMandatoryQueryParameter("item", typeof(string));
 
             return
-                PerformAuthenticatedFunc(req, (cart) => 
+                HttpRequestHandler.PerformAuthenticatedFunc((cart, parameters) => 
                 {
-                    var item = req.Query["item"];
-                    if (string.IsNullOrEmpty(item))
-                    {
-                        return new BadRequestObjectResult("Query Param: \"item\" must be specified.");
-                    }
+                    var item = (string)parameters["item"];
 
                     Product product = Products.GetItem(item);
                     if (StockManipulator.IsValidPurchaseRequest(product, cart.RemainingFunds))
@@ -108,8 +110,9 @@ namespace VendingMachine
         {
             log.LogInformation("C# HTTP trigger function processed GET final-purchase.");
 
-            return 
-                PerformAuthenticatedFunc(req, (cart) =>
+            HttpRequestHandler.InitialiseForRequest(req);
+            return
+                HttpRequestHandler.PerformAuthenticatedFunc((cart, _) =>
                 {
                     var result = new OkObjectResult(cart);
 
@@ -117,24 +120,6 @@ namespace VendingMachine
 
                     return result;
                 });
-        }
-
-        private IActionResult PerformAuthenticatedFunc(HttpRequest req, Func<ShoppingCart, IActionResult> delegateFunc)
-        {
-            try
-            {
-                if (!int.TryParse(req.Headers["x-id"], out int userId))
-                {
-                    throw new UnauthorizedAccessException();
-                }
-                ShoppingCart cart = ShoppingCartFactory.AddOrRetrieveCart(userId);
-
-                return delegateFunc(cart);
-            }
-            catch (UnauthorizedAccessException)
-            {
-                return new UnauthorizedResult();
-            }
         }
     }
 }
